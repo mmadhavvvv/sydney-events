@@ -1,14 +1,11 @@
-const Datastore = require('nedb-promises');
-const path = require('path');
+const mongoose = require('mongoose');
 
-const db = Datastore.create({ filename: path.join(__dirname, '../../users.db'), autoload: true });
+const userSchema = new mongoose.Schema({
+    googleId: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    name: String,
+    avatar: String,
+    role: { type: String, enum: ['admin', 'user'], default: 'user' }
+}, { timestamps: true });
 
-db.ensureIndex({ fieldName: 'email', unique: true });
-
-const User = {
-    findOne: (query) => db.findOne(query),
-    findById: (id) => db.findOne({ _id: id }),
-    create: (data) => db.insert(data)
-};
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

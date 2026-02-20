@@ -17,7 +17,7 @@ app.use(cors({
 app.use(express.json());
 
 // Database
-// connectDB(); // Disabled for NeDB local mode
+connectDB();
 
 // Scheduler
 startScheduler();

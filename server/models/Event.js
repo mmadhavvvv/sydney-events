@@ -1,36 +1,21 @@
-const Datastore = require('nedb-promises');
-const path = require('path');
+const mongoose = require('mongoose');
 
-const db = Datastore.create({ filename: path.join(__dirname, '../../events.db'), autoload: true });
-
-db.ensureIndex({ fieldName: 'sourceUrl', unique: true });
-
-const Event = {
-    // Pass through to NeDB, which supports chaining: await db.find().sort().limit()
-    find: (query) => db.find(query),
-    findOne: (query) => db.findOne(query),
-    findById: (id) => db.findOne({ _id: id }),
-    create: (data) => db.insert(data),
-    countDocuments: (query) => db.count(query),
-    // NeDB update returns numAffected, but we want the doc for findByIdAndUpdate usually
-    // But our controller uses it and expects the doc? 
-    // route: const event = await Event.findByIdAndUpdate(req.params.id, { status }, { new: true });
-    // We need to implement findByIdAndUpdate
-    findByIdAndUpdate: async (id, update, options) => {
-        // update is like { status: '...' } or { $set: { status: '...' } }
-        // Mongoose might pass $set or direct fields. 
-        // Our controller passes { status } (direct fields). NeDB needs { $set: ... } usually for partial update?
-        // Actually NeDB replace if no modifier.
-        // Let's assume we need $set.
-        const modifier = update.$set ? update : { $set: update };
-        await db.update({ _id: id }, modifier, { ...options });
-        return db.findOne({ _id: id });
+const eventSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    description: String,
+    date: { type: Date, required: true },
+    venue: String,
+    city: { type: String, default: 'Sydney' },
+    imageUrl: String,
+    sourceUrl: { type: String, unique: true },
+    source: String,
+    category: String,
+    status: {
+        type: String,
+        enum: ['new', 'imported', 'updated', 'inactive'],
+        default: 'new'
     },
-    updateOne: (query, update) => {
-        const modifier = update.$set ? update : { $set: update };
-        return db.update(query, modifier);
-    },
-    _db: db
-};
+    lastScraped: { type: Date, default: Date.now }
+}, { timestamps: true });
 
-module.exports = Event;
+module.exports = mongoose.model('Event', eventSchema);
