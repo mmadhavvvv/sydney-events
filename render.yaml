@@ -1,4 +1,5 @@
 services:
+  # Backend Service
   - type: web
     name: sydney-events-backend
     env: node
@@ -10,10 +11,13 @@ services:
       - key: PORT
         value: 5000
       - key: GOOGLE_CLIENT_ID
-        fromContext: google-client-id
+        sync: false # This will prompt you for the value in the UI
       - key: FRONTEND_URL
-        fromContext: frontend-url
+        sync: false # This will prompt you for the value in the UI
+      - key: NODE_VERSION
+        value: 18
 
+  # Frontend Service (Static Site)
   - type: web
     name: sydney-events-frontend
     env: static
@@ -23,6 +27,9 @@ services:
     rootDir: client
     envVars:
       - key: VITE_API_URL
-        fromContext: backend-url
+        fromService:
+          type: web
+          name: sydney-events-backend
+          property: host
       - key: VITE_GOOGLE_CLIENT_ID
-        fromContext: google-client-id
+        sync: false # This will prompt you for the value in the UI
