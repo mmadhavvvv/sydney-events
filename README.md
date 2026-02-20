@@ -92,12 +92,6 @@ npm run dev
 
 ---
 
-## 📸 Screenshots
-
-*(Add your beautiful screenshots here)*
-
----
-
 ## 📝 License
 Distributed under the MIT License. See `LICENSE` for more information.
 
