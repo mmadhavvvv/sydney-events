@@ -27,6 +27,11 @@ app.use('/api/events', eventRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 
+// Root route for API status
+app.get('/', (req, res) => {
+    res.send('Sydney Events API is running. Please visit the frontend URL for the web platform.');
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
