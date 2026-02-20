@@ -10,21 +10,20 @@ services:
       - key: PORT
         value: "5000"
       - key: GOOGLE_CLIENT_ID
-        value: "SET_ME"
+        sync: false
       - key: FRONTEND_URL
-        value: "SET_ME"
+        sync: false
       - key: MONGO_URI
-        value: "SET_ME"
+        sync: false
 
-  - type: web
+  - type: static
     name: sydney-events-frontend
-    env: static
     plan: free
     rootDir: client
     buildCommand: npm install && npm run build
     publishDir: dist
     envVars:
       - key: VITE_API_URL
-        value: "SET_ME"
+        sync: false
       - key: VITE_GOOGLE_CLIENT_ID
-        value: "SET_ME"
+        sync: false
