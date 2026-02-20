@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: sydney-events-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node index.js
+    rootDir: server
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: GOOGLE_CLIENT_ID
+        fromContext: google-client-id
+      - key: FRONTEND_URL
+        fromContext: frontend-url
+
+  - type: web
+    name: sydney-events-frontend
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishDir: dist
+    rootDir: client
+    envVars:
+      - key: VITE_API_URL
+        fromContext: backend-url
+      - key: VITE_GOOGLE_CLIENT_ID
+        fromContext: google-client-id
